@@ -2,6 +2,8 @@
 
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
+var TimeHandler = require(path + '/app/controllers/timeHandler.js');
+
 
 module.exports = function (app, passport) {
 
@@ -12,7 +14,7 @@ module.exports = function (app, passport) {
 			res.redirect('/login');
 		}
 	}
-
+	var timeHandler = new TimeHandler();
 	var clickHandler = new ClickHandler();
 
 	app.route('/')
@@ -37,10 +39,12 @@ module.exports = function (app, passport) {
 		});
 
 	app.route('/api/:id')
-		.get(isLoggedIn, function (req, res) {
+		.get(function (req, res) {
 			res.json(req.user.github);
 		});
 
+	app.get('/time/:elDate', timeHandler.handleTime);
+	
 	app.route('/auth/github')
 		.get(passport.authenticate('github'));
 
