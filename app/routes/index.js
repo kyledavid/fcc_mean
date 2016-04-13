@@ -3,6 +3,7 @@
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
 var TimeHandler = require(path + '/app/controllers/timeHandler.js');
+var whoami = require(path + '/app/controllers/whoami.js');
 
 
 module.exports = function (app, passport) {
@@ -14,6 +15,8 @@ module.exports = function (app, passport) {
 			res.redirect('/login');
 		}
 	}
+	
+	var who = new whoami();
 	var timeHandler = new TimeHandler();
 	var clickHandler = new ClickHandler();
 
@@ -42,8 +45,12 @@ module.exports = function (app, passport) {
 		.get(function (req, res) {
 			res.json(req.user.github);
 		});
+	
+	app.route('/whoami')
+		.get(who.getIP);
 
-	app.get('/time/:elDate', timeHandler.handleTime);
+	app.route('/time/:elDate')
+		.get(timeHandler.handleTime);
 	
 	app.route('/auth/github')
 		.get(passport.authenticate('github'));
